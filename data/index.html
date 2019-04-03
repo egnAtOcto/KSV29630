@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en-US">
+	<meta charset="UTF-8">
+<title>Bosch KSV29630 configuration app</title>
+<script>
+function openCity(evt, cityName) {
+    // Declare all variables
+    var i, tabcontent, tablinks;
+
+    // Get all elements with class="tabcontent" and hide them
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    // Get all elements with class="tablinks" and remove the class "active"
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+
+  function httpGet(theUrl)
+  {
+    var xmlHttp = null;
+
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, false );
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
+  }
+
+function loadFields() {
+	var configParams = ["ambientTemp", "bCoeff", "compMinRunTime", "compTimeBeforeRestart", "freezerTemp", "fridgeState", "fridgeTemp", "mqttPass", "mqttPort", "mqttServer", "mqttUser", "nominalResistance", "nominalTemperature", "onoff", "reset", "sampleTime", "seriesResistor", "setSuperFreezer", "setSuperFridge", "setTemp", "ssid", "superFreezerMaxTemp", "superFreezerMaxTime", "superFreezerState", "superFridgeMaxTime", "superFridgeMinTemp", "superFridgeState", "tempSetting", "wifiPassword", "numSamples", "mqttClientId", "defaultTempConsigne"];
+	for (i=0; i<configParams.length; ++i) {
+		document.getElementById(configParams[i]).setAttribute("value",httpGet("/param?"+configParams[i]+"="));
+	}
+}
+</script>
+<style>
+h1 {
+	font-family: "Arial";
+	font-weight: bold;
+}
+
+h2 {
+	font-family: "Arial";
+	font-weight: bold;
+}
+
+ /* Style the tab */
+.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+    background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+div.blueTable {
+  border: 1px solid #1C6EA4;
+  background-color: #EEEEEE;
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+}
+.divTable.blueTable .divTableCell, .divTable.blueTable .divTableHead {
+  border: 1px solid #AAAAAA;
+  padding: 3px 2px;
+}
+.divTable.blueTable .divTableBody .divTableCell {
+  font-size: 13px;
+}
+.divTable.blueTable .divTableRow:nth-child(even) {
+  background: #D0E4F5;
+}
+.blueTable .tableFootStyle {
+  font-size: 14px;
+}
+.blueTable .tableFootStyle .links {
+	 text-align: right;
+}
+.blueTable .tableFootStyle .links a{
+  display: inline-block;
+  background: #1C6EA4;
+  color: #FFFFFF;
+  padding: 2px 8px;
+  border-radius: 5px;
+}
+.blueTable.outerTableFooter {
+  border-top: none;
+}
+.blueTable.outerTableFooter .tableFootStyle {
+  padding: 3px 5px; 
+}
+/* DivTable.com */
+.divTable{ display: table; }
+.divTableRow { display: table-row; }
+.divTableHeading { display: table-header-group;}
+.divTableCell, .divTableHead { display: table-cell; 	font-family: "Arial";}
+.divTableHeading { display: table-header-group;}
+.divTableFoot { display: table-footer-group;}
+.divTableBody { display: table-row-group;}
+</style>
+<body>
+<h1>Bosch KSV29630 configuration page</h1>
+
+ <!-- Tab links -->
+<div class="tab">
+  <button id="defaultOpen" class="tablinks" onclick="openCity(event, 'Home')">Home</button>
+  <button class="tablinks" onclick="openCity(event, 'Wifi')">Wifi</button>
+  <button class="tablinks" onclick="openCity(event, 'MQTT')">MQTT</button>
+  <button class="tablinks" onclick="openCity(event, 'Sensors')">Sensors</button>
+  <button class="tablinks" onclick="openCity(event, 'Fridge operation')">Fridge operation</button>
+</div>
+
+<!-- Tab content -->
+<div id="Wifi" class="tabcontent">
+	<form action="/save" method="GET">
+		<div class="divTable blueTable">
+			<div class="divTableBody">
+			<div class="divTableRow">
+			<div class="divTableCell">SSID</div>
+			<div class="divTableCell"><input type="text" id="ssid" name="ssid"/></div>
+			</div>
+			<div class="divTableRow">
+			<div class="divTableCell">Password</div>
+			<div class="divTableCell"><input type="text" id="wifiPassword" name="wifiPassword"/></div>
+			</div>
+			</div>
+		</div>
+  	<p><input type="submit" value="Save"></p>
+	</form>
+</div>
+
+<div id="MQTT" class="tabcontent">
+	<h2>Connection parameters</h2>
+	<form action="/save" method="GET">
+		<div class="divTable blueTable">
+			<div class="divTableBody">
+				<div class="divTableRow">
+					<div class="divTableCell">MQTT ClientId</div>
+					<div class="divTableCell"><input type="text" id="mqttClientId" name="mqttClientId"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">Server</div>
+					<div class="divTableCell"><input type="text" id="mqttServer" name="mqttServer"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">Port</div>
+					<div class="divTableCell"><input type="text" id="mqttPort" name="mqttPort"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">Username</div>
+					<div class="divTableCell"><input type="text" id="mqttUser" name="mqttUser"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">Password</div>
+					<div class="divTableCell"><input type="text" id="mqttPass" name="mqttPass"/></div>
+				</div>
+			</div>
+		</div>
+  	<p><input type="submit" value="Save"></p>
+	</form>
+
+	<h2>Topics (sent by the fridge)</h2>
+	<form action="/save" method="GET">
+		<div class="divTable blueTable">
+			<div class="divTableBody">
+				<div class="divTableRow">
+					<div class="divTableCell">SuperFridge state</div>
+					<div class="divTableCell"><input type="text" id="superFridgeState" name="superFridgeState"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">SuperFreezer state</div>
+					<div class="divTableCell"><input type="text" id="superFreezerState" name="superFreezerState"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">Ambient temperature</div>
+					<div class="divTableCell"><input type="text" id="ambientTemp" name="ambientTemp"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">Fridge temperature</div>
+					<div class="divTableCell"><input type="text" id="fridgeTemp" name="fridgeTemp"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">Freezer temperature</div>
+					<div class="divTableCell"><input type="text" id="freezerTemp" name="freezerTemp"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">Temperature setting</div>
+					<div class="divTableCell"><input type="text" id="tempSetting" name="tempSetting"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">Fridge state</div>
+					<div class="divTableCell"><input type="text" id="fridgeState" name="fridgeState"/></div>
+				</div>
+			</div>
+		</div>
+  	<p><input type="submit" value="Save"></p>
+	</form>
+
+	<h2>Topics (received by the fridge)</h2>
+	<form action="/save" method="GET">
+		<div class="divTable blueTable">
+			<div class="divTableBody">
+				<div class="divTableRow">
+					<div class="divTableCell">SuperFridge state</div>
+					<div class="divTableCell"><input type="text" id="setSuperFridge" name="setSuperFridge"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">SuperFreezer state</div>
+					<div class="divTableCell"><input type="text" id="setSuperFreezer" name="setSuperFreezer"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">Temperature setting</div>
+					<div class="divTableCell"><input type="text" id="setTemp" name="setTemp"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">Reset</div>
+					<div class="divTableCell"><input type="text" id="reset" name="reset"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">Fridge on/off</div>
+					<div class="divTableCell"><input type="text" id="onoff" name="onoff"/></div>
+				</div>
+			</div>
+		</div>
+  	<p><input type="submit" value="Save"></p>
+	</form>
+</div>
+
+<div id="Sensors" class="tabcontent">
+<p style="font-family: Arial;">	Enter below the parameters used in the Steinhart - Hart relation when converting from resistance to temperature</p>
+	<form action="/save" method="GET">
+		<div class="divTable blueTable">
+			<div class="divTableBody">
+				<div class="divTableRow">
+					<div class="divTableCell">Series resistor</div>
+					<div class="divTableCell"><input type="text" id="seriesResistor" name="seriesResistor"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">Nominal resistance</div>
+					<div class="divTableCell"><input type="text" id="nominalResistance" name="nominalResistance"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">Nominal temperature</div>
+					<div class="divTableCell"><input type="text" id="nominalTemperature" name="nominalTemperature"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">&beta; coefficient</div>
+					<div class="divTableCell"><input type="text" id="bCoeff" name="bCoeff"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">Number of samples</div>
+					<div class="divTableCell"><input type="text" id="numSamples" name="numSamples"/></div>
+				</div>
+			</div>
+		</div>
+  	<p><input type="submit" value="Save"></p>
+	</form>
+</div>
+
+<div id="Fridge operation" class="tabcontent">
+<p style="font-family: Arial;">WARNING : incorrect settings may seriously damage your fridge or make it work incorrectly</p>
+	<form action="/save" method="GET">
+		<div class="divTable blueTable">
+			<div class="divTableBody">
+				<div class="divTableRow">
+					<div class="divTableCell">Default temperature setting</div>
+					<div class="divTableCell"><input type="text" id="defaultTempConsigne" name="defaultTempConsigne"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">Superfridge min temperature</div>
+					<div class="divTableCell"><input type="text" id="superFridgeMinTemp" name="superFridgeMinTemp"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">Superfreezer max temperature</div>
+					<div class="divTableCell"><input type="text" id="superFreezerMaxTemp" name="superFreezerMaxTemp"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">Superfridge maximum run time (ms)</div>
+					<div class="divTableCell"><input type="text" id="superFridgeMaxTime" name="superFridgeMaxTime"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">Superfreezer maximum run time (ms)</div>
+					<div class="divTableCell"><input type="text" id="superFreezerMaxTime" name="superFreezerMaxTime"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">Compressor time-before-restart (ms)</div>
+					<div class="divTableCell"><input type="text" id="compTimeBeforeRestart" name="compTimeBeforeRestart"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">Compressor minimum run time (ms)</div>
+					<div class="divTableCell"><input type="text" id="compMinRunTime" name="compMinRunTime"/></div>
+				</div>
+				<div class="divTableRow">
+					<div class="divTableCell">Min time between temp samples</div>
+					<div class="divTableCell"><input type="text" id="sampleTime" name="sampleTime"/></div>
+				</div>
+			</div>
+		</div>
+  	<p><input type="submit" value="Save"></p>
+		</form>
+</div>
+
+<div id="Home" class="tabcontent">
+	<img src="bosch_ksv_29630.jpg"/>
+	<img src="etiquette_eco.jpg"/>
+</div> 
+</body>
+<script>
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen").click();
+window.onload = loadFields;
+</script>
+</html>
